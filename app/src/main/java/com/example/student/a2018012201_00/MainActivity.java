@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         {
             Log.d("DB", c.getString(1) + "," + c.getInt(2));
         }
+        db.close();
     }
     public void click3(View v)//篩選方法1
     {
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         //Cursorj物件可以搜尋低一個引數裡的SQL語法裡面的問號，並用第二個引數的陣列依序填入SQL與法理的問號，有幾個物號陣列就有幾個值
         c.moveToFirst();
         Log.d("DB", c.getString(1) + "," + c.getInt(2));
+        db.close();
     }
     public void click4(View v)//讀取方法2
     {
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         //第七個引數：排序方法
         c.moveToFirst();
         Log.d("DB", c.getString(1) + "," + c.getInt(2));
+        db.close();
     }
     public void click5(View v)//篩選方法2
     {
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor c = db.query("students", new String[] {"_id", "name", "score"}, "_id=?", new String[] {"2"}, null, null, null);
         c.moveToFirst();
         Log.d("DB", c.getString(1) + "," + c.getInt(2));
+        db.close();
     }
 
     public void click6(View v)
@@ -111,9 +115,30 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
         ContentValues cv = new ContentValues();
         cv.put("_id", 5);//_id已經設定是會自動新增，沒有這一行也沒關係
-        cv.put("name", "Mary");
-        cv.put("score", 92);
+        cv.put("name", "Mary");//先決定要輸入的欄位以及決定輸入的值
+        cv.put("score", 92);//先決定要輸入的欄位以及決定輸入的值
         db.insert("students", null, cv);
+        //接著再決定這個值是要做新增還是做更新用，此處是做新增(修改)
+        //insert第一個參數是要輸入的資料表，第二個參數是，第三個參數是要新增甚麼
+        db.close();
+    }
+    public void click8(View v)
+    {
+        File dbFile = new File(getFilesDir(), "student.db");
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
+        ContentValues cv = new ContentValues();
+        cv.put("score", 85);//先決定要輸入的欄位以及決定輸入的值
+        db.update("students", cv, "_id=?", new String[] {"2"});
+        //接著再決定這個值是要做新增還是做更新用，此處是做更新(修改)
+        //update第一個參數是要輸入的資料表，第二個參數是修改甚麼，第三個參數是要修改哪一欄，第四個參數是修改哪一筆
+        db.close();
+    }
+    public void click9(View v)
+    {
+        File dbFile = new File(getFilesDir(), "student.db");
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
+        db.delete("students", "_id=?", new String[] {"2"});
+        //delete第一個參數是要刪除資料所在的資料表，第二個參數是要刪除資料的欄位，第三個參數是要刪除該欄位符合第三個參數的資料
         db.close();
     }
 }
