@@ -1,5 +1,6 @@
 package com.example.student.a2018012201_00;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -53,8 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
         c.moveToFirst();//moveToFirst,游標移動到第一筆資料
         Log.d("DB", c.getString(1) + "," + c.getInt(2));//把這筆資料的第1、2欄(第0欄是_id)抓到LOG秀出來
-        c.moveToNext();//moveToFirst,游標移動到下一筆資料
-        Log.d("DB", c.getString(1) + "," + c.getInt(2));
+//        c.moveToNext();//moveToFirst,游標移動到下一筆資料
+//        Log.d("DB", c.getString(1) + "," + c.getInt(2));
+        while (c.moveToNext())
+        {
+            Log.d("DB", c.getString(1) + "," + c.getInt(2));
+        }
     }
     public void click3(View v)//篩選方法1
     {
@@ -71,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         File dbFile = new File(getFilesDir(), "student.db");
         SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
         Cursor c = db.query("students", new String[] {"_id", "name", "score"}, null, null, null, null, null);
-       //db.query的
+       //SQLiteDatabase.query的
         //第一個引數：選定這個資料庫物件的特定資料表
         //第二個引數：這個資料表的欄位
         //第三個引數：欲篩選欄位
@@ -89,5 +94,26 @@ public class MainActivity extends AppCompatActivity {
         Cursor c = db.query("students", new String[] {"_id", "name", "score"}, "_id=?", new String[] {"2"}, null, null, null);
         c.moveToFirst();
         Log.d("DB", c.getString(1) + "," + c.getInt(2));
+    }
+
+    public void click6(View v)
+    {
+        File dbFile = new File(getFilesDir(), "student.db");
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("Insert into students( name, score) values('VVV',99)");
+        //完整欄位是_id, name, score，但_id已設定會自動新增，所以不打也行
+
+        db.close();
+    }
+    public void click7(View v)
+    {
+        File dbFile = new File(getFilesDir(), "student.db");
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
+        ContentValues cv = new ContentValues();
+        cv.put("_id", 5);//_id已經設定是會自動新增，沒有這一行也沒關係
+        cv.put("name", "Mary");
+        cv.put("score", 92);
+        db.insert("students", null, cv);
+        db.close();
     }
 }
